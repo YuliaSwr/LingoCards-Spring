@@ -5,7 +5,3 @@ spring:
     password: ${PROD_DB_PASSWORD}
     name: spring-app
 
-  sql:
-    init:
-      mode: always
-
