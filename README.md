@@ -4,7 +4,6 @@
 To set up local database uncomment variables in `application.yml` file and fill with your local database server data
 <br>
 <img width="450" alt="image" src="https://github.com/YuliaSwr/LingoCards-Spring/assets/77783002/f087cf32-0a68-47c2-a17a-844217409307">
-
 <br>
 Database schema will be created on init due to `schema.sql` in resources folder
 
