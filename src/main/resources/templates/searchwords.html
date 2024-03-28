@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Search</title>
+    <!-- CSS -->
+    <link rel="stylesheet" th:href="@{sidebar.css}" href="../static/sidebar.css">
+    <link rel="stylesheet" th:href="@{search-page.css}" href="../static/search-page.css">
+
+    <!-- jQuery Library -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@200;300;400;500;600;700&display=swap">
+
+    <!-- Flaticon Icons -->
+    <link rel="stylesheet" href="https://cdn-uicons.flaticon.com/2.1.0/uicons-regular-rounded/css/uicons-regular-rounded.css">
+</head>
+<body>
+<!-- SIDEBAR -->
+<div class="sidebar panel">
+    <!-- Profile Section -->
+    <div class="profile">
+        <div class="profile-avatar"><img th:src="${#authentication.principal.avatarImage}" alt=""></div>
+        <div class="profile-name"
+             th:text="${#authentication.principal.firstName + ' ' + #authentication.principal.lastName}"></div>
+        <div class="profile-email" th:text="${#authentication.principal.username}"></div>
+    </div>
+
+    <!-- Menu Section -->
+    <div class="menu">
+        <a class="menu-item" th:href="@{/search}">
+            <i class="fi fi-rr-search"></i>
+            <p>Search</p>
+        </a>
+        <a class="menu-item" th:href="@{/mysets}">
+            <i class="fi fi-rr-folder"></i>
+            <p>My sets</p>
+        </a>
+        <a class="menu-item logout-item" th:href="@{/logout}">
+            <i class="fi fi-rr-sign-out-alt"></i>
+            <p>Logout</p>
+        </a>
+    </div>
+
+    <!-- Logo -->
+    <div class="logo">LingoCards</div>
+</div>
+<!-- END OF SIDEBAR -->
+
+<!-- MAIN CONTENT -->
+<div class="main-content panel">
+    <div class="title">Looking for new words</div>
+
+    <!-- Search Field -->
+    <div class="search-field">
+        <div class="select-div">
+            <select id="translation-select" onchange="getSelectedOptionValue()">
+                <option value="EN.DE">EN -> DE</option>
+                <option value="EN.ES">EN -> ES</option>
+                <option value="DE.EN">DE -> EN</option>
+                <option value="DE.ES">DE -> ES</option>
+                <option value="ES.DE">ES -> DE</option>
+                <option value="ES.EN">ES -> EN</option>
+            </select>
+        </div>
+        <input type="text" id="searchInput">
+        <button onclick="search()"><i class="fi fi-rr-search"></i></button>
+    </div>
+
+    <!-- Search Result Section -->
+    <div class="search-result"></div>
+
+    <!-- Error Section -->
+    <div class="error-section" hidden style="display: none">
+        There is no translation for this word
+    </div>
+
+    <!-- Search Item Template -->
+    <div class="search-item hd" id="search-item">
+        <div class="translate"></div>
+        <div class="add-section">
+            <div>Add to set:</div>
+            <select>
+                <option disabled selected>Select a set</option>
+                <option th:each="set: ${sets}" th:text="${set.name}" th:value="${set.id}"></option>
+            </select>
+            <button><i class="fi fi-rr-check"></i></button>
+        </div>
+    </div>
+</div>
+<!-- END OF MAIN CONTENT -->
+
+<script>
+    let fromLang = "EN";
+    let toLang = "DE";
+
+    // function to get selected option value
+    function getSelectedOptionValue() {
+        let selectElement = document.getElementById("translation-select");
+        let selectedValue = selectElement.value;
+        let parts = selectedValue.split('.');
+        fromLang = parts[0];
+        toLang = parts[1];
+    }
+
+    // function to perform search
+    function search() {
+        let word = $('#searchInput').val();
+
+        $.ajax({
+            url: '/api/translate',
+            method: 'GET',
+            data: {
+                word: word,
+                from: fromLang,
+                to: toLang
+            },
+            success: function (data) {
+                $('.search-result').empty();
+                $('.error-section').hide();
+                console.log(data);
+                let i = 1;
+                if (data.length === 0) {
+                    $('.error-section').show();
+                } else {
+                    data.forEach(function (translate) {
+                        let newItem = $('#search-item').clone();
+                        newItem.find('.translate').text(translate);
+                        newItem.removeClass("hd");
+                        newItem.removeAttr("id");
+
+                        newItem.attr('id', i);
+                        newItem.find('button').attr('onclick', 'addFlashcard("' + translate + '", ' + i + ')');
+
+                        $('.search-result').append(newItem);
+                        i++;
+                    });
+                }
+
+            },
+            error: function (xhr, status, error) {
+                console.error('There was a problem with your ajax request:', error);
+            }
+        });
+    }
+
+    function addFlashcard(backValue, itemId) {
+        let frontValue = $('#searchInput').val();
+        let setId = $('#' + itemId).find('.add-section').find('select').val();
+
+        console.log("setId: " + setId);
+
+        $.ajax({
+            url: '/api/flashcard/add',
+            method: 'POST',
+            data: {
+                set_id: setId,
+                front: frontValue,
+                back: backValue
+            },
+            success: function (data) {
+                window.alert("Flashcard was successfully add to selected set");
+            },
+            error: function (xhr, status, error) {
+                window.alert("Something went wrong. Try again");
+                console.error('There was a problem with your ajax request:', error);
+            }
+        });
+    }
+</script>
+</body>
+</html>

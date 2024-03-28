@@ -1,0 +1,252 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Edit Set</title>
+
+    <!-- CSS -->
+    <link rel="stylesheet" th:href="@{sidebar.css}" href="../static/sidebar.css">
+    <link rel="stylesheet" th:href="@{edit-page.css}" href="../static/edit-page.css">
+
+    <!-- jQuery Library -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@200;300;400;500;600;700&display=swap">
+
+    <!-- Flaticon Icons -->
+    <link rel="stylesheet" href="https://cdn-uicons.flaticon.com/2.1.0/uicons-regular-rounded/css/uicons-regular-rounded.css">
+</head>
+<body>
+<!-- SIDEBAR -->
+<div class="sidebar panel">
+    <!-- Profile Section -->
+    <div class="profile">
+        <div class="profile-avatar"><img th:src="${#authentication.principal.avatarImage}" alt=""></div>
+        <div class="profile-name"
+             th:text="${#authentication.principal.firstName + ' ' + #authentication.principal.lastName}"></div>
+        <div class="profile-email" th:text="${#authentication.principal.username}"></div>
+    </div>
+
+    <!-- Menu Section -->
+    <div class="menu">
+        <a class="menu-item" th:href="@{/search}">
+            <i class="fi fi-rr-search"></i>
+            <p>Search</p>
+        </a>
+        <a class="menu-item" th:href="@{/mysets}">
+            <i class="fi fi-rr-folder"></i>
+            <p>My sets</p>
+        </a>
+        <a class="menu-item logout-item" th:href="@{/logout}">
+            <i class="fi fi-rr-sign-out-alt"></i>
+            <p>Logout</p>
+        </a>
+    </div>
+
+    <!-- Logo -->
+    <div class="logo">LingoCards</div>
+</div>
+<!-- END OF SIDEBAR -->
+<!-- Main Content -->
+<div class="main-content panel">
+    <!-- Title -->
+    <div class="title">Edit set</div>
+
+    <!-- Set Name Input -->
+    <div class="set-name">
+        <input type="text" th:value="${flashSet.name}" placeholder="Set name" id="set-name">
+    </div>
+
+    <!-- Flashcard List -->
+    <div class="flashcard-list">
+        <!-- Existing Flashcards -->
+        <div class="flashcard-item exist" th:each="flashcard: ${flashSet.flashcards}">
+            <p class="fc-id" th:text="${flashcard.id}" th:hidden="true"></p>
+            <div class="value front">
+                <input type="text" th:value="${flashcard.front}" th:placeholder="${flashcard.front}">
+            </div>
+            <div class="value back">
+                <input type="text" th:value="${flashcard.back}" th:placeholder="${flashcard.back}">
+            </div>
+            <button class="delete-btn" onclick="hideFlashcard(this)"><i class="fi fi-rr-cross"></i></button>
+        </div>
+
+        <!-- Empty Flashcard Template -->
+        <div class="flashcard-item" id="empty-flashcard" style="display: none">
+            <div class="value front">
+                <input type="text">
+            </div>
+            <div class="value back">
+                <input type="text">
+            </div>
+            <button class="delete-btn" onclick="hideFlashcard(this)"><i class="fi fi-rr-cross"></i></button>
+        </div>
+    </div>
+
+    <!-- Add Flashcard Button -->
+    <div class="add-flashcard">
+        <button onclick="showNewFlashcard()">+ Add new flashcard</button>
+    </div>
+
+    <!-- Save and Cancel Buttons -->
+    <div class="buttons">
+        <button class="btn cancel-btn" onclick="cancel()">Cancel</button>
+        <button class="btn save-btn" th:attr="data-set-id=${flashSet.id}, data-set-name=${flashSet.name}"
+                onclick="saveFlashcards(this.dataset.setId, this.dataset.setName)">Save
+        </button>
+    </div>
+</div>
+<script>
+    let hiddenFlashcards = [];
+
+    function showNewFlashcard() {
+        let newFlashcard = $("#empty-flashcard").clone();
+        newFlashcard.removeAttr("id");
+        newFlashcard.removeAttr("style");
+        $(".flashcard-list").append(newFlashcard);
+    }
+
+    function hideFlashcard(button) {
+        let item = button.closest('.flashcard-item');
+        if (item) {
+            let id = item.querySelector('p.fc-id').innerText;
+            hiddenFlashcards.push(id);
+            item.style.display = 'none';
+        }
+    }
+
+    function cancel() {
+        window.location.href = "/mysets";
+    }
+
+    function saveFlashcards(setId, setName) {
+        let newName = $("#set-name").val();
+        console.log(newName);
+        if (newName.trim() !== setName) {
+            $.ajax({
+                url: '/api/flashset/update',
+                method: 'POST',
+                data: {
+                    set_id: setId,
+                    set_name: newName
+                },
+                success: function (data) {
+                    console.log("updated set name");
+                },
+                error: function (xhr, status, error) {
+                    console.error('There was a problem with your ajax request:', error);
+                }
+            });
+        }
+
+        let modifiedFlashcards = getModifiedFlashcards();
+        let newFlashcards = getNewFlashcards();
+        let deletedFlashcards = hiddenFlashcards;
+
+        console.log(modifiedFlashcards);
+        console.log(newFlashcards);
+        console.log(deletedFlashcards);
+
+        newFlashcards.forEach((newFlashcard) => {
+                $.ajax({
+                    url: '/api/flashcard/add',
+                    method: 'POST',
+                    data: {
+                        set_id: setId,
+                        front: newFlashcard.frontValue,
+                        back: newFlashcard.backValue
+                    },
+                    success: function (data) {
+                        console.log("added");
+                    },
+                    error: function (xhr, status, error) {
+                        console.error('There was a problem with your ajax request:', error);
+                    }
+                });
+            }
+        );
+
+        modifiedFlashcards.forEach((flashcard) => {
+                $.ajax({
+                    url: '/api/flashcard/update',
+                    method: 'POST',
+                    data: {
+                        flashcard_id: flashcard.id,
+                        front: flashcard.frontValue,
+                        back: flashcard.backValue
+                    },
+                    success: function (data) {
+                        console.log("updated");
+                    },
+                    error: function (xhr, status, error) {
+                        console.error('There was a problem with your ajax request:', error);
+                    }
+                });
+            }
+        );
+
+        deletedFlashcards.forEach((flashcard) => {
+                $.ajax({
+                    url: '/api/flashcard/del',
+                    method: 'POST',
+                    data: {
+                        flashcard_id: flashcard
+                    },
+                    success: function (data) {
+                        console.log("deleted");
+                    },
+                    error: function (xhr, status, error) {
+                        console.error('There was a problem with your ajax request:', error);
+                    }
+                });
+            }
+        );
+
+        window.location.href = "/mysets";
+    }
+
+    function getNewFlashcards() {
+        let flashcardItems = document.querySelectorAll('.flashcard-item:not(.exist)');
+        let newFlashcards = [];
+
+        flashcardItems.forEach(function (item) {
+            let frontInput = item.querySelector('.value.front input');
+            let backInput = item.querySelector('.value.back input');
+
+            if (frontInput.value.trim().length !== 0 && backInput.value.trim().length !== 0) {
+                let flashcard = {
+                    frontValue: frontInput.value,
+                    backValue: backInput.value
+                };
+                newFlashcards.push(flashcard);
+            }
+        });
+        return newFlashcards;
+    }
+
+    function getModifiedFlashcards() {
+        let flashcardItems = document.querySelectorAll('.flashcard-item.exist');
+        let modifiedFlashcards = [];
+
+        flashcardItems.forEach(function (item) {
+            let frontInput = item.querySelector('.value.front input');
+            let backInput = item.querySelector('.value.back input');
+            let id = item.querySelector('p.fc-id').innerText;
+
+            if (frontInput.value !== frontInput.placeholder || backInput.value !== backInput.placeholder) {
+                let flashcard = {
+                    id: id,
+                    frontValue: frontInput.value,
+                    backValue: backInput.value
+                };
+                modifiedFlashcards.push(flashcard);
+            }
+        });
+        return modifiedFlashcards;
+    }
+</script>
+</body>
+</html>

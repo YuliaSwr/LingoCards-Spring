@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Registration - LingoCards</title>
+
+    <!-- CSS -->
+    <link rel="stylesheet" th:href="@{registration.css}" href="../static/registration.css">
+
+    <!-- jQuery Library -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+
+    <!-- Google Fonts -->
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@200;300;400;500;600;700&display=swap">
+
+    <!-- Flaticon Icons -->
+    <link rel='stylesheet' href='https://cdn-uicons.flaticon.com/2.1.0/uicons-regular-rounded/css/uicons-regular-rounded.css'>
+</head>
+<body>
+<div class="logo">LingoCards</div>
+<div class="panel">
+    <!-- Error Message for Existing Account -->
+    <div class="error-msg" style="display: none;">Account with such email already exists</div>
+    <!-- Form Inputs -->
+    <input type="text" placeholder="First name" id="first-name" minlength="2">
+    <input type="text" placeholder="Last name" id="last-name" minlength="2">
+    <input type="email" placeholder="Email" id="email">
+    <input type="password" placeholder="Password" id="password">
+    <!-- Avatar Section -->
+    <div class="avatar-title">Choose avatar:</div>
+    <div class="avatar-slider" id="avatar-slider">
+        <img th:src="@{avatar1.png}" src="../static/avatar1.png" alt="avatar1.png" style="border: 2px solid blue;">
+        <img th:src="@{avatar2.png}" src="../static/avatar2.png" alt="avatar2.png">
+        <img th:src="@{avatar3.png}" src="../static/avatar3.png" alt="avatar3.png">
+    </div>
+    <!-- Hidden Input for Selected Avatar -->
+    <input type="hidden" id="selected-avatar" name="selected-avatar" value="avatar1.png">
+    <!-- Registration Button -->
+    <button onclick="register()">Register</button>
+</div>
+<!-- Copyright Information -->
+<div class="copyrights">Developed by Yuliia Sida, 121-20-2 group</div>
+<script>
+    // functionality for Avatar Selection
+    const avatarSlider = document.getElementById('avatar-slider');
+    const selectedAvatarInput = document.getElementById('selected-avatar');
+
+    avatarSlider.addEventListener('click', function (event) {
+        if (event.target.tagName === 'IMG') {
+            Array.from(avatarSlider.children).forEach(img => {
+                img.style.border = '';
+            });
+            event.target.style.border = '2px solid blue';
+            selectedAvatarInput.value = event.target.alt;
+        }
+    });
+
+    // function to register user
+    function register() {
+        let firstName = $("#first-name").val();
+        let lastName = $("#last-name").val();
+        let email = $("#email").val();
+        let password = $("#password").val();
+        let avatar = selectedAvatarInput.value;
+
+        // AJAX Request for Registration
+        $.ajax({
+            url: '/api/register',
+            method: 'POST',
+            data: {first_name: firstName, last_name: lastName, email: email, password: password, avatar: avatar},
+            success: function (data) {
+                console.log(data);
+                if (data === 409) {
+                    $(".error-msg").css("display", "block");
+                } else {
+                    window.alert("You were successfully registered");
+                    window.location.href = "/login";
+                }
+            },
+            error: function (xhr, status, error) {
+                window.alert("Something went wrong. Try again");
+                console.error('There was a problem with your AJAX request:', error);
+            }
+        });
+    }
+</script>
+</body>
+</html>

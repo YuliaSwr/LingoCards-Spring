@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Set</title>
+    <!-- CSS -->
+    <link rel="stylesheet" th:href="@{sidebar.css}" href="../static/sidebar.css">
+    <link rel="stylesheet" th:href="@{setpage.css}" href="../static/setpage.css">
+
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@200;300;400;500;600;700&display=swap">
+
+    <!-- Flaticon Icons -->
+    <link rel="stylesheet" href="https://cdn-uicons.flaticon.com/2.1.0/uicons-regular-rounded/css/uicons-regular-rounded.css">
+</head>
+<body>
+<!-- SIDEBAR -->
+<div class="sidebar panel">
+    <!-- Profile Section -->
+    <div class="profile">
+        <div class="profile-avatar"><img th:src="${#authentication.principal.avatarImage}" alt=""></div>
+        <div class="profile-name"
+             th:text="${#authentication.principal.firstName + ' ' + #authentication.principal.lastName}"></div>
+        <div class="profile-email" th:text="${#authentication.principal.username}"></div>
+    </div>
+
+    <!-- Menu Section -->
+    <div class="menu">
+        <a class="menu-item" th:href="@{/search}">
+            <i class="fi fi-rr-search"></i>
+            <p>Search</p>
+        </a>
+        <a class="menu-item" th:href="@{/mysets}">
+            <i class="fi fi-rr-folder"></i>
+            <p>My sets</p>
+        </a>
+        <a class="menu-item logout-item" th:href="@{/logout}">
+            <i class="fi fi-rr-sign-out-alt"></i>
+            <p>Logout</p>
+        </a>
+    </div>
+
+    <!-- Logo -->
+    <div class="logo">LingoCards</div>
+</div>
+<!-- END OF SIDEBAR -->
+
+<!-- Main Content Panel -->
+<div class="main-content panel">
+    <!-- Set Title -->
+    <div class="title">Set <span th:text="${flashSet.name}"></span></div>
+
+    <!-- Flashcards List -->
+    <div class="flashcards-list">
+        <!-- Iterate Through Flashcards -->
+        <div class="flashcard-item" th:each="flashcard: ${flashSet.flashcards}">
+            <!-- Front Value -->
+            <div class="value front" th:text="${flashcard.front}"></div>
+            <!-- Back Value -->
+            <div class="value back" th:text="${flashcard.back}"></div>
+        </div>
+    </div>
+</div>
+<!-- End of Main Content Panel -->
+</body>
+</html>

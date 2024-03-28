@@ -1,0 +1,165 @@
+.main-content .set-name {
+    padding: 5px;
+    margin: 10px 20px;
+
+    background: rgba(255, 255, 255, 0.5);
+    border-radius: 10px;
+
+    display: flex;
+    align-content: center;
+}
+
+.main-content .set-name input {
+    width: 100%;
+    height: 30px;
+
+    border: 0;
+    border-radius: 7px;
+
+    padding: 5px 10px;
+    font-size: 16px;
+    font-weight: 500;
+
+    outline: none;
+}
+
+.flashcard-list .flashcard {
+    background: #fff;
+    height: 35px;
+
+    border-radius: 7px;
+
+    padding: 5px 10px;
+    margin: 10px 20px;
+
+    display: flex;
+    align-items: center;
+}
+
+.add-flashcard {
+    background: rgba(255, 255, 255, 0.5);
+    height: 40px;
+
+    margin: 10px 20px;
+
+    border-radius: 7px;
+    border: 2px dashed #8CB2F0;
+
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.add-flashcard button {
+    width: 100%;
+    height: 40px;
+    background: transparent;
+    border: 0;
+
+    cursor: pointer;
+
+    font-size: 16px;
+    font-weight: 500;
+    background: -webkit-linear-gradient(125deg, #91CAF7, #8DB1F1);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+
+.buttons {
+    margin: 10px 20px;
+    display: flex;
+    align-items: center;
+    justify-content: end;
+}
+
+.buttons .btn {
+    width: 120px;
+    height: 35px;
+
+    border: 0;
+    border-radius: 10px;
+
+    cursor: pointer;
+    font-size: 16px;
+}
+
+.buttons .btn:hover {
+    border: 1px #fff solid;
+}
+
+.cancel-btn {
+    background: rgba(255, 255, 255, 0.5);
+    color: rgba(0, 0, 0, 0.7);
+
+    margin-right: 10px;
+}
+
+.save-btn {
+    background: linear-gradient(45deg, #91CAF7, #8DB1F1);
+    color: #fff;
+}
+
+.flashcard-list {
+    display: flex;
+    flex-direction: column;
+}
+
+.flashcard-item {
+    background: #fff;
+    margin: 10px 20px;
+    padding: 10px;
+
+    border-radius: 7px;
+
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+}
+
+.flashcard-item .value {
+    width: 47%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.flashcard-item .value input {
+    width: 100%;
+    height: 100%;
+
+    border: 0;
+    background: rgba(214,214,214,0.3);
+    border-radius: 5px;
+
+    padding: 10px;
+
+    outline: none;
+}
+
+.flashcard-item .delete-btn {
+    width: 20px;
+    height: 20px;
+    margin-left: 7px;
+    background: #e63946;
+    border-radius: 3px;
+    border: 0;
+    color: #fff;
+
+    font-weight: 700;
+    cursor: pointer;
+}
+
+.flashcard-item .delete-btn:hover {
+    opacity: 0.7;
+}
+
+.flashcard-item .delete-btn i {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.flashcard-list {
+    overflow-x: scroll;
+}
+

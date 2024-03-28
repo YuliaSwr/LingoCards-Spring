@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>My sets</title>
+    <!-- CSS -->
+    <link rel="stylesheet" th:href="@{sidebar.css}" href="../static/sidebar.css">
+    <link rel="stylesheet" th:href="@{mysets.css}" href="../static/mysets.css">
+
+    <!-- jQuery Library -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@200;300;400;500;600;700&display=swap">
+
+    <!-- Flaticon Icons -->
+    <link rel="stylesheet" href="https://cdn-uicons.flaticon.com/2.1.0/uicons-regular-rounded/css/uicons-regular-rounded.css">
+</head>
+<body>
+<!-- SIDEBAR -->
+<div class="sidebar panel">
+    <!-- Profile Section -->
+    <div class="profile">
+        <div class="profile-avatar"><img th:src="${#authentication.principal.avatarImage}" alt=""></div>
+        <div class="profile-name"
+             th:text="${#authentication.principal.firstName + ' ' + #authentication.principal.lastName}"></div>
+        <div class="profile-email" th:text="${#authentication.principal.username}"></div>
+    </div>
+
+    <!-- Menu Section -->
+    <div class="menu">
+        <a class="menu-item" th:href="@{/search}">
+            <i class="fi fi-rr-search"></i>
+            <p>Search</p>
+        </a>
+        <a class="menu-item" th:href="@{/mysets}">
+            <i class="fi fi-rr-folder"></i>
+            <p>My sets</p>
+        </a>
+        <a class="menu-item logout-item" th:href="@{/logout}">
+            <i class="fi fi-rr-sign-out-alt"></i>
+            <p>Logout</p>
+        </a>
+    </div>
+
+    <!-- Logo -->
+    <div class="logo">LingoCards</div>
+</div>
+<!-- END OF SIDEBAR -->
+
+<!-- Main Content Panel -->
+<div class="main-content panel">
+    <!-- Title -->
+    <div class="title">My Sets</div>
+
+    <!-- Create New Set Button -->
+    <div class="add-set" onclick="createFlashset()">
+        <button>Create new set</button>
+    </div>
+
+    <!-- List of Sets -->
+    <div class="sets-list">
+        <!-- Iterate Through Sets -->
+        <div class="set-item" th:each="setItem: ${sets}" th:href="@{'/set?id=' + ${setItem.id}}">
+            <!-- Set Title and Total Number of Flashcards -->
+            <div class="set-title" th:attr="data-set-id=${setItem.id}" onclick="openPage(this.dataset.setId)">
+                <div class="set-name" th:text="${setItem.name}">SetName</div>
+                <div class="amount-field">Total number: <span th:text="${#lists.size(setItem.flashcards)}">-</span></div>
+            </div>
+
+            <!-- Set Action Buttons -->
+            <div class="set-btns">
+                <!-- Download Button -->
+                <a class="download-btn" th:attr="data-set-id=${setItem.id}" onclick="downloadExcelFile(this.dataset.setId)"><i class="fi fi-rr-download"></i></a>
+                <!-- Edit Button -->
+                <a class="edit-btn" th:href="@{'/edit?id=' + ${setItem.id}}" href="#"><i class="fi fi-rr-edit"></i></a>
+                <!-- Delete Button -->
+                <a class="delete-btn" th:attr="data-set-name=${setItem.name}, data-set-id=${setItem.id}" onclick="deleteFlashset(this.dataset.setName, this.dataset.setId)"><i class="fi fi-rr-cross"></i></a>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- End of Main Content Panel -->
+
+<script>
+    // function to open set page
+    function openPage(setId) {
+        window.location.href = "/set?id=" + setId;
+    }
+
+    // function to delete flashset
+    function deleteFlashset(setName, setId) {
+        if (window.confirm("Do you really want to delete set " + setName + "?")) {
+            $.ajax({
+                url: '/api/flashset/del',
+                method: 'POST',
+                data: {
+                    set_id: setId,
+                },
+                success: function (data) {
+                    window.alert("Flashset was deleted");
+                    location.reload();
+                },
+                error: function (xhr, status, error) {
+                    window.alert("Something went wrong. Try again");
+                    console.error('There was a problem with your ajax request:', error);
+                }
+            });
+        }
+    }
+
+    // function to create flashset
+    function createFlashset() {
+        $.ajax({
+            url: '/api/flashset/create',
+            method: 'POST',
+            success: function (data) {
+                window.location.href = "/edit?id=" + data;
+            },
+            error: function (xhr, status, error) {
+                window.alert("Something went wrong. Try again");
+                console.error('There was a problem with your ajax request:', error);
+            }
+        });
+    }
+
+    // function to download excel file with flashset
+    function downloadExcelFile(setId) {
+        let xhr = new XMLHttpRequest();
+        xhr.open('GET', '/api/flashset/file?set_id=' + setId, true);
+        xhr.responseType = 'blob';
+
+        xhr.onload = function () {
+            if (xhr.status === 200) {
+                let a = document.createElement('a');
+                a.href = window.URL.createObjectURL(xhr.response);
+                a.download = 'flashcards.xlsx';
+                document.body.appendChild(a);
+                a.click();
+                document.body.removeChild(a);
+            }
+        };
+
+        xhr.send();
+    }
+
+</script>
+</body>
+</html>

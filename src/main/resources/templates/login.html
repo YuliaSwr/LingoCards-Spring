@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Login - LingoCards</title>
+
+    <!-- CSS -->
+    <link rel="stylesheet" th:href="@{login.css}" href="../static/login.css">
+
+    <!-- jQuery Library -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+
+    <!-- Google Fonts -->
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@200;300;400;500;600;700&display=swap">
+
+    <!-- Flaticon Icons -->
+    <link rel="stylesheet" href="https://cdn-uicons.flaticon.com/2.1.0/uicons-regular-rounded/css/uicons-regular-rounded.css">
+</head>
+<body>
+<div class="logo">LingoCards</div>
+<div class="panel">
+    <div class="title">Login</div>
+    <form class="form" action="/login" method="post">
+        <!-- CSRF Token -->
+        <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}" style="display:none;"/>
+        <!-- Email Input -->
+        <input type="email" placeholder="Email" name="username">
+        <!-- Password Input -->
+        <input type="password" placeholder="Password" name="password">
+        <!-- Submit Button -->
+        <input type="submit" value="Login">
+    </form>
+    <!-- Registration Link -->
+    <a class="reg-link" th:href="@{/register}">Register new account</a>
+</div>
+<!-- Copyright Information -->
+<div class="copyrights">Developed by Yuliia Sida, 121-20-2 group</div>
+</body>
+</html>

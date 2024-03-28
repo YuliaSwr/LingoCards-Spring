@@ -1,0 +1,128 @@
+* {
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    background: linear-gradient(45deg, #DBD5FA, #DBE7EE);
+    display: flex;
+    height: 98vh;
+    padding: 1vh;
+
+    font-family: Inter, serif;
+}
+
+.panel {
+    background: rgba(255, 255, 255, 0.4);
+    border-radius: 10px;
+}
+
+.sidebar {
+    margin-right: 1vh;
+    width: 320px;
+    height: 98vh;
+
+    position: fixed;
+}
+
+.profile {
+    width: 100%;
+
+    display: flex;
+    flex-direction: column;
+    align-content: center;
+    justify-content: center;
+
+    text-align: center;
+
+    margin: 20px 0;
+}
+
+.profile .profile-avatar img {
+    border-radius: 200px;
+    width: 100px;
+    height: 100px;
+    margin: 5px 0;
+}
+
+.profile .profile-name {
+    margin: 5px 0;
+    font-size: 19px;
+    font-weight: 600;
+}
+
+.profile .profile-email {
+    margin: 5px 0;
+    font-size: 14px;
+    color: #666666;
+    font-weight: 500;
+}
+
+.menu {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-content: center;
+}
+
+.menu .menu-item {
+    padding: 10px;
+    margin: 5px 10px;
+    border-radius: 10px;
+
+    font-weight: 500;
+
+    display: flex;
+    align-content: center;
+
+    color: #000;
+    text-decoration: none;
+}
+
+.menu .menu-item i {
+    margin-right: 10px;
+    display: flex;
+    justify-content: center;
+    align-content: center;
+
+    font-size: 18px;
+}
+
+.menu .menu-item:hover {
+    background: rgba(255, 255, 255, 0.6);
+    cursor: pointer;
+}
+
+.main-content {
+    margin-left: 330px;
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+}
+
+.main-content .title {
+    padding: 20px 30px;
+    font-size: 24px;
+    font-weight: 500;
+}
+
+.logo {
+    position: absolute;
+    bottom: 30px;
+    left: 50px;
+
+    font-size: 23px;
+    font-weight: 400;
+    font-family: Silom, serif;
+    background: -webkit-linear-gradient(125deg, #91CAF7, #8DB1F1);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+
+.logout-item p {
+    color: rgba(0, 0, 0, 0.6);
+}
+
+.logout-item i {
+    color: rgba(0, 0, 0, 0.6);
+}

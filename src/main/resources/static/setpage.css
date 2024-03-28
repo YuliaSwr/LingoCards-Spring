@@ -1,0 +1,31 @@
+.flashcard-list {
+    display: flex;
+    flex-direction: column;
+}
+
+.flashcard-item {
+    background: #fff;
+    margin: 10px 20px;
+    padding: 10px 20px;
+
+    border-radius: 7px;
+
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+}
+
+.flashcard-item .value {
+    width: 49%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.flashcard-item .front {
+    border-right: 1px solid #ccc;
+}
+
+.main-content {
+    overflow-x: scroll;
+}
