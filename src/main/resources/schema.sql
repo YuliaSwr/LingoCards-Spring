@@ -1,5 +1,5 @@
 -- Accounts Table
-CREATE TABLE accounts
+CREATE TABLE IF NOT EXISTS accounts
 (
     id           SERIAL PRIMARY KEY,
     first_name   VARCHAR(50)  NOT NULL,
@@ -10,7 +10,7 @@ CREATE TABLE accounts
 );
 
 -- Set Table
-CREATE TABLE sets
+CREATE TABLE IF NOT EXISTS sets
 (
     id      SERIAL PRIMARY KEY,
     name    VARCHAR(100) NOT NULL,
@@ -19,7 +19,7 @@ CREATE TABLE sets
 );
 
 -- Flashcard Table
-CREATE TABLE flashcard
+CREATE TABLE IF NOT EXISTS flashcard
 (
     id     SERIAL PRIMARY KEY,
     front  TEXT NOT NULL,

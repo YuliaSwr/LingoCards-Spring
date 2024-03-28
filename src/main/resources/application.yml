@@ -1,3 +1,9 @@
+#PROD_DB_HOST: localhost
+#PROD_DB_PORT: 3306
+#PROD_DB_NAME: database_name
+#PROD_DB_USERNAME: your_username
+#PROD_DB_PASSWORD: your_password
+
 spring:
   datasource:
     url: jdbc:postgresql://${PROD_DB_HOST}:${PROD_DB_PORT}/${PROD_DB_NAME}
@@ -5,3 +11,6 @@ spring:
     password: ${PROD_DB_PASSWORD}
     name: spring-app
 
+  sql:
+    init:
+      mode: always
