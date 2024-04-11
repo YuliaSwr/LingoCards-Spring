@@ -1,3 +1,5 @@
+Deployed application on Heroku - <a href='https://lingocards-e5878581f5d7.herokuapp.com'>LINK</a>
+---------------------
 <h1>Application Setup Guide</h1>
 <h2>Running the application locally</h2>
 
