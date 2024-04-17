@@ -1,5 +1,5 @@
 ## To test application
-- <b>Deployed application on Heroku - <a href='https://lingocards-e5878581f5d7.herokuapp.com'>LINK</a></b>
+- <b>Deployed application on Heroku - <a href='https://lingocards-e5878581f5d7.herokuapp.com' target="_blank">LINK</a></b>
 - To test locally see next topic: Application Setup Guide
 - Quick Overview: See the screenshots below
   
